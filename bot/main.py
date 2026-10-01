@@ -122,6 +122,19 @@ def scan_platform(cfg, store, tg, browser, name, scraper_cls, allow_contact) -> 
     return True
 
 
+def rooms_label(cfg: dict) -> str:
+    """Human label for the configured room count, e.g. '3 Zimmer', '3–3.5 Zimmer', '3+ Zimmer'."""
+    f = cfg.get("filters") or {}
+    lo, hi = f.get("min_rooms"), f.get("max_rooms")
+    if lo is None:
+        return "Wohnungen"
+    if hi is None or hi >= 99:
+        return f"{lo:g}+ Zimmer"
+    if lo == hi:
+        return f"{lo:g} Zimmer"
+    return f"{lo:g}–{hi:g} Zimmer"
+
+
 def _safe_tg(tg, text):
     """Send a Telegram note but never let a network/Telegram error crash the loop."""
     try:
@@ -202,12 +215,13 @@ def main():
     tg = Telegram()
     klein_interval = cfg.get("kleinanzeigen_interval_seconds", 30)
     others_interval = cfg.get("poll_interval_seconds", 300)
+    label = rooms_label(cfg)
     klein_auto = (cfg["platforms"].get("kleinanzeigen") or {}).get("auto_contact")
-    klein_line = (f"• Kleinanzeigen: every {klein_interval}s + auto-message new 3-room ads"
+    klein_line = (f"• Kleinanzeigen: every {klein_interval}s + auto-message new matches"
                   if klein_auto else
                   f"• Kleinanzeigen: every {klein_interval}s (links only)")
 
-    _safe_tg(tg, f"🤖 Göttingen apartment bot started.\n{klein_line}\n"
+    _safe_tg(tg, f"🤖 Göttingen apartment bot started — searching {label}.\n{klein_line}\n"
              f"• Other platforms: every {others_interval // 60} min (links only)")
     log.info("Started. Kleinanzeigen %ss, others %ss", klein_interval, others_interval)
 

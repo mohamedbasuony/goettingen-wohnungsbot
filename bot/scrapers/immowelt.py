@@ -17,9 +17,11 @@ class Immowelt(BaseScraper):
     name = "immowelt"
 
     def search_url(self) -> str:
-        min_rooms = int(self.cfg["filters"]["min_rooms"])
-        return (f"https://www.immowelt.de/suche/mieten/wohnung/"
-                f"zimmer-{min_rooms}/niedersachsen/gottingen-37073/ad08de1164")
+        # No room segment: Immowelt's `zimmer-N` only matches N..N.5, which can't
+        # express an arbitrary range. Fetch all Göttingen apartments and let the
+        # room filter (passes_filters) narrow to whatever count the user chose.
+        return ("https://www.immowelt.de/suche/mieten/wohnung/"
+                "niedersachsen/gottingen-37073/ad08de1164")
 
     def fetch(self, browser=None) -> list[Listing]:
         soup = BeautifulSoup(self.get(self.search_url()).text, "lxml")

@@ -1,15 +1,17 @@
 # 🏠 Göttingen Wohnungsbot
 
-A bot that scans for **3-Zimmer apartments in Göttingen** across the major German
-rental platforms and pings you on Telegram. Two speeds:
+A bot that scans the major German rental platforms for apartments in **Göttingen**
+matching **the room count and postal code you choose at setup**, and pings you on
+Telegram within seconds of a new listing.
 
-- **Kleinanzeigen** — scanned **every 30 seconds**, and it **auto-sends your German
-  viewing request** to every new matching ad (needs a one-time login).
-- **All other platforms** — scanned **every 5 minutes**, **links only** (no login).
+- **Kleinanzeigen** — scanned every few seconds (links only by default; optional
+  auto-message to new matches with a one-time login).
+- **All other platforms** — scanned every 5 minutes, links only (no login).
 
-> **Why 3 Zimmer?** In Germany the living room counts as a room. An apartment with
-> 2 bedrooms + living room + kitchen + bathroom is a **3-Zimmer-Wohnung**.
-> The filter is set to 3–3.5 Zimmer in [config.yaml](config.yaml).
+> **Room counting (German).** The living room counts as a room, so a 2-bedroom +
+> living room + kitchen + bathroom flat is a **3-Zimmer-Wohnung**. At setup you pick
+> whatever you want — `3` (exactly 3), `3-3.5` (a range), `2-4`, or `3+` — and that
+> drives both the searches and the alerts.
 
 > ⚠️ **Account risk.** Scanning Kleinanzeigen every 30s *and* auto-messaging is
 > aggressive — it's the behaviour most likely to get the account flagged/banned by

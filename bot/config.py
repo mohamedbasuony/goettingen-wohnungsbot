@@ -15,7 +15,11 @@ def load_config() -> dict:
     if not path.exists():
         raise SystemExit("config.yaml is missing. See the README / run install.sh.")
     with open(path, encoding="utf-8") as f:
-        return yaml.safe_load(f)
+        cfg = yaml.safe_load(f)
+    # Apply the room-count / postal-code the user chose at setup (.env) so it
+    # drives BOTH the search URLs and the result filter — not just the filter.
+    cfg["filters"] = resolve_filters(cfg)
+    return cfg
 
 
 def env(name: str, default: str | None = None, required: bool = False) -> str | None:
