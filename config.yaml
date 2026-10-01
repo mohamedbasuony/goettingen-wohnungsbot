@@ -1,0 +1,63 @@
+# ============================================================
+#  Göttingen Wohnungsbot — Konfiguration
+# ============================================================
+
+city: "Göttingen"
+
+filters:
+  # Rooms + postal codes are normally set by `python -m bot.wizard`
+  # (it writes SEARCH_ROOMS / SEARCH_POSTAL_CODES to .env, which override the
+  #  defaults below). These values are the fallback if .env has none.
+  #
+  # Deutsche Zählweise: das Wohnzimmer zählt als Zimmer mit.
+  # "2 Zimmer + Wohnzimmer + Küche + Bad" = eine 3-Zimmer-Wohnung.
+  min_rooms: 3.0
+  max_rooms: 3.5
+  postal_codes: []          # e.g. ["37073", "37083"] — limit to these Göttingen PLZ; [] = all
+  max_rent_cold: null       # e.g. 900 (€ Kaltmiete). null = no cap
+  min_size_sqm: null        # e.g. 60. null = any
+  include_unknown_rooms: true   # still notify for ads with no room count (link only)
+
+poll_interval_seconds: 300            # other platforms: search every 5 minutes
+kleinanzeigen_interval_seconds: 5     # Kleinanzeigen: scan this often (link-only, no login).
+                                      # 5s ≈ within 5s of an ad appearing. Aggressive: if the IP
+                                      # gets rate-limited the bot auto-backs-off, then recovers.
+                                      # Raise to 10–15 if you see frequent back-off warnings.
+headless: true                        # no browser needed at all in link-only mode
+
+# enabled:      search this platform
+# auto_contact: auto-send the German message. OFF everywhere — Kleinanzeigen's login
+#               can't be automated past its "confirm you're human" wall, so the bot
+#               sends you links and you message landlords yourself.
+platforms:
+  kleinanzeigen:    { enabled: true,  auto_contact: false }
+  immowelt:         { enabled: true,  auto_contact: false }
+  immoscout24:      { enabled: false, auto_contact: false }
+  wg_gesucht:       { enabled: true,  auto_contact: false }
+  volksheimstaette: { enabled: true,  auto_contact: false }
+  wg_eg:            { enabled: true,  auto_contact: false }
+  vonovia:          { enabled: true,  auto_contact: false }
+
+contact:
+  # Safety brake: never auto-send more than this many messages per hour
+  # (protects the account from a spam/ban flag). Raise at your own risk.
+  max_per_hour: 8
+
+  # Sent to every new matching Kleinanzeigen ad when auto_contact is on.
+  # Placeholders are filled from YOUR .env (set by `python -m bot.wizard`):
+  #   {title} {full_name} {email} {phone} {occupation} {household_line}
+  message_template: |
+    Hallo,
+
+    ich habe Interesse an Ihrer Wohnungsanzeige und würde diese gerne besichtigen.
+
+    Kurz zu meiner Person: {occupation}. {household_line}
+
+    Ich würde mich sehr freuen, wenn Sie mir einen Besichtigungstermin ermöglichen könnten. Zeitlich bin ich flexibel und richte mich gerne nach Ihren Vorschlägen.
+
+    Für Rückfragen stehe ich Ihnen jederzeit gerne zur Verfügung.
+
+    Viele Grüße
+    {full_name}
+    {phone}
+    {email}

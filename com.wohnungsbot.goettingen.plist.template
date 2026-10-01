@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  macOS autostart template. __BOT_DIR__ is filled in by ./install-autostart.sh
+  (which also loads it). Starts the bot at login and restarts it on crash.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.wohnungsbot.goettingen</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>__BOT_DIR__/run.sh</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>__BOT_DIR__</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>__BOT_DIR__/data/launchd.log</string>
+    <key>StandardErrorPath</key>
+    <string>__BOT_DIR__/data/launchd.log</string>
+</dict>
+</plist>
